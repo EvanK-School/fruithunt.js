@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <style>
+    html {
+      overflow: hidden;
+      height: 100%;
+    }
+  </style>
+</head>
 <body>
 <script src="http://gamingJS.com/Three.js"></script>
 <script src="http://gamingJS.com/Tween.js"></script>
@@ -24,12 +32,12 @@
   // Create the Scene and Avatar
   document.body.style.backgroundColor = 'blue';
   var notAllowed = [];
-  
+
   var sunlight = new THREE.DirectionalLight();
   sunlight.intensity = 0.3;
   sunlight.position.set(500, 250, 250);
   scene.add(sunlight);
-  
+
   var plane = new THREE.PlaneGeometry(2500, 2500);
   var cover = new THREE.MeshPhongMaterial();
   cover.emissive.setRGB(0, 0.4, 0);
@@ -37,65 +45,65 @@
   earth.rotation.set(-Math.PI/2, 0, 0);
   earth.position.set(0, -175.1, 0);
   scene.add(earth);
-  
+
   var shape = new THREE.SphereGeometry();
   var cover = new THREE.MeshPhongMaterial();
   cover.emissive.setRGB(1.0, 0.8, 0.0);
   var fruit = new THREE.Mesh(shape, cover);
   scene.add(fruit);
-  
+
   var marker = new THREE.Object3D();
   scene.add(marker);
   marker.add(camera);
-  
+
   var cover = new THREE.MeshNormalMaterial();
   var bShape = new THREE.CylinderGeometry(10, 100, 150, 15);
   var aShape = new THREE.SphereGeometry(30, 6, 5);
   var hShape = new THREE.SphereGeometry(75, 15, 12);
-  
+
   var avatar = new THREE.Mesh(bShape, cover);
   avatar.position.set(0, 0, 0);
   marker.add(avatar);
-  
+
   var head = new THREE.Mesh(hShape, cover);
   head.position.set(0, 155, 0);
-  avatar.add(head);  
-  
+  avatar.add(head);
+
   var rightHand = new THREE.Mesh(aShape, cover);
   rightHand.position.set(-100, 20, 0);
   avatar.add(rightHand);
-  
+
   var leftHand = new THREE.Mesh(aShape, cover);
   leftHand.position.set(100, 20, 0);
   avatar.add(leftHand);
-  
+
   var rightFoot = new THREE.Mesh(aShape, cover);
   rightFoot.position.set(-60, -150, 0);
   avatar.add(rightFoot);
-  
+
   var leftFoot = new THREE.Mesh(aShape, cover);
   leftFoot.position.set(60, -150, 0);
   avatar.add(leftFoot);
-  
+
   var treeWithTreasure;
   var trees = [];
-  
+
   function makeTreeAt(x, z){
     var trnkc = new THREE.MeshLambertMaterial();
     trnkc.emissive.setRGB(0.4, 0.2, 0);
-    
+
     var leafc = new THREE.MeshLambertMaterial();
     leafc.emissive.setRGB(34/255, 139/255, 34/255);
-    
+
     var trunk = new THREE.Mesh(
       new THREE.CylinderGeometry(50, 50, 200), trnkc);
-    
+
     var top = new THREE.Mesh(
       new THREE.SphereGeometry(150), leafc);
-    
+
     top.position.y = 175;
     trunk.add(top);
-    
+
     var boundary = new THREE.Mesh(
       new THREE.CircleGeometry(300),
       new THREE.MeshNormalMaterial()
@@ -104,14 +112,14 @@
     boundary.rotation.x = -Math.PI/2;
     trunk.add(boundary);
     notAllowed.push(boundary);
-    
+
     trunk.position.set(x, -75, z);
     scene.add(trunk);
     return top;
   }
-  
+
   var paused = false;
-  
+
   function shakeTree() {
     if (!gameOver) {
       treeWithTreasure = Math.floor(Math.random() * trees.length);
@@ -125,34 +133,34 @@
           }
         })
         .start();
-      
+
       gotPoints = !gotPoints;
       paused = true;
       setTimeout(shakeTree, 4 * 1000);
       paused = false;
-      
+
   }
   fruit.position.x = trees[treeWithTreasure].parent.position.x;
   fruit.position.z = trees[treeWithTreasure].parent.position.z;
   }
-  
-  
+
+
   for (i = 0; i < 2; i++){
     trees.push(makeTreeAt(500, -1000*i + 500));
     trees.push(makeTreeAt(-500, -1000*i + 500));
   }
-  
+
   shakeTree();
-  
+
   // Animation
-  
+
   var movW = false;
   var movA = false;
   var movS = false;
   var movD = false;
   var factor = 1;
   var clock = new THREE.Clock(true);
-  
+
   function detectCollisions(){
     var vector = new THREE.Vector3(0, -1, 0);
     var ray = new THREE.Ray(marker.position, vector);
@@ -163,7 +171,7 @@
     if (intersects || offMap) return true;
     return false;
   }
-  
+
   function animateJump(obj, f){
     if (avatar.position.y < 2) {
       new TWEEN
@@ -175,13 +183,13 @@
       .start();
     }
   }
-  
+
   function jump() {
     animateJump(avatar, 1.25);
     validJump = checkForTreasure();
     if (validJump) animateJump(fruit, 2);
   }
-  
+
   document.addEventListener('keydown', function(event) {
     key = event.keyCode;
     if (gameOver) return;
@@ -192,7 +200,7 @@
     if (key == 67) factor = 2;    // c to double speed
     if (key == 32) jump();        // space to jump
   });
-  
+
   document.addEventListener('keyup', function(event){
     key = event.keyCode;
     if (key == 87) movW = false; // w for up
@@ -201,56 +209,56 @@
     if (key == 68) movD = false; // d for right
     if (key == 67) factor = 1;  // c to double speed
   });
-  
+
   function animate(){
     if (gameOver) return;
-    
+
     requestAnimationFrame(animate);
     TWEEN.update();
-    
+
     var direction = 0;
         if (movW) {
         marker.position.z -= (factor*4);
         direction = Math.PI;
       }
-      
+
       if (movA) {
         marker.position.x -= (factor*4);
         direction = 3*Math.PI/2;
       }
-      
+
       if (movS) {
         marker.position.z += (factor*4);
         direction = 0;
       }
-      
+
       if (movD) {
         marker.position.x += (factor*4);
         direction = Math.PI/2;
     }
-    
+
      if (detectCollisions()) {
       if (movW) {
         marker.position.z += factor * 4;
         direction = Math.PI;
       }
-    
+
       if (movA) {
         marker.position.x += factor * 4;
         direction = 3*Math.PI/2;
       }
-    
+
       if (movS) {
         marker.position.z -= factor * 4;
         direction = 0;
       }
-    
+
       if (movD) {
         marker.position.x -= factor * 4;
         direction = Math.PI/2;
     }}
-    
-    
+
+
     // Animations Based on Motion
     new TWEEN.
       Tween({y: avatar.rotation.y}).
@@ -259,7 +267,7 @@
         avatar.rotation.y = this.y;
       }).
       start();
-      
+
       var position = 0;
     if (movW || movA || movS || movD) {
       position = Math.sin(clock.getElapsedTime() * 7.5) * 50;
@@ -271,22 +279,22 @@
     leftFoot.position.z = position;
     leftHand.position.z = -position;
     rightFoot.position.z = -position;
-    
+
     renderer.render(scene, camera);
   }
-  
+
   animate();
 
   // Controlling the game
-  
+
   var gotPoints = false;
-  
+
   var scoreboard = new Scoreboard();
   scoreboard.countdown(45);
   scoreboard.score();
   scoreboard.help(
-      'WASD to move. ' + 
-      'Walk up to the shaking trees ' + 
+      'WASD to move. ' +
+      'Walk up to the shaking trees ' +
       'and press the space bar to jump and collect fruit. ' +
       'Each fruit collected = 10 points.'
   );
@@ -296,30 +304,30 @@
     scoreboard.help('Reload to Play Again!');
     gameOver = true;
   });
-  
+
   function checkForTreasure() {
     if (treeWithTreasure === undefined) return;
-    
+
     var treasureTree = trees[treeWithTreasure];
       p1 = treasureTree.parent.position;
       p2 = marker.position;
-    
+
     var distance = Math.sqrt(
       (p1.x - p2.x)*(p1.x - p2.x) + (p1.z - p2.z)*(p1.z - p2.z));
-    
+
     var validJump = false;
     if (distance < 500 && !gotPoints && !paused) validJump = true;
-    
+
     if (validJump){
       if (scoreboard.getTimeRemaining === 0) return;
       gotPoints = true;
       scoreboard.addPoints(10);
       Sounds.bubble.play();
     }
-    
+
     return validJump;
   }
-  
+
   // Now, show what the camera sees on the screen:
   renderer.render(scene, camera);
 </script>

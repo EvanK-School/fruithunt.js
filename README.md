@@ -1,12 +1,7 @@
-# hello-world
+# FruitHuntJS
 
-This my first program using GitHub.
-
-
-Honoring the tradition, I am creating
-a repository that will say "Hello
-World!" when it is run.
-
-I am hoping to eventually be able to use
-GitHub to get my program for a Digital
-Breakout online to share w/ the world.
+FruitHuntJS was a game I made years ago, originally for my "Tech-ED" class. It was based
+upon the JavaScript tutorial in Chris Strom's book _3D Game Programming for Kids_. At the
+time, I had no idea how the internet worked. (I still don't, but I'm getting better). Now,
+however, I'm actually pretty decent and working with the internet. Thus, I decided to
+finally give this game the dedicated P2P website it deserves. This is the result.
